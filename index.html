@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>feel drive safe marquee</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+
+    <style>
+/* ---------- theme tokens: every colour is a variable so a theme swap
+   can be cross-faded instead of snapping ---------- */
+:root {
+    --bg-1: #041e2e;
+    --bg-2: #0a5a72;
+    --bg-3: #12a4a4;
+    --ink: #eafcff;
+    --band: rgba(255, 255, 255, 0.08);
+    --band-line: rgba(255, 255, 255, 0.18);
+    --fade: 1.6s;
+    --ease: cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    overflow-x: hidden;
+    color: var(--ink);
+    background-color: var(--bg-1);
+    font-family: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    transition: background-color var(--fade) var(--ease), color var(--fade) var(--ease);
+}
+
+/* ---------- animated gradient background ---------- */
+.bg {
+    position: fixed;
+    inset: 0;
+    z-index: -2;
+    background:
+        radial-gradient(60% 60% at 15% 20%, var(--bg-3) 0%, transparent 60%),
+        radial-gradient(55% 55% at 85% 25%, var(--bg-2) 0%, transparent 62%),
+        radial-gradient(70% 70% at 50% 100%, var(--bg-2) 0%, transparent 65%),
+        linear-gradient(160deg, var(--bg-1) 0%, var(--bg-2) 55%, var(--bg-1) 100%);
+    background-size: 180% 180%, 180% 180%, 200% 200%, 200% 200%;
+    animation: drift 26s ease-in-out infinite alternate;
+}
+
+/* soft drifting light blobs give the flat gradient some depth */
+.bg::before,
+.bg::after {
+    content: '';
+    position: absolute;
+    width: 55vmax;
+    height: 55vmax;
+    border-radius: 50%;
+    filter: blur(90px);
+    opacity: 0.45;
+    background: radial-gradient(circle at 30% 30%, var(--bg-3), transparent 70%);
+    will-change: transform;
+}
+
+.bg::before {
+    top: -18vmax;
+    left: -12vmax;
+    animation: float-a 18s ease-in-out infinite alternate;
+}
+
+.bg::after {
+    right: -16vmax;
+    bottom: -20vmax;
+    opacity: 0.32;
+    animation: float-b 22s ease-in-out infinite alternate;
+}
+
+/* vignette keeps the marquee readable over the brightest blobs */
+.bg-vignette {
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    background: radial-gradient(120% 90% at 50% 50%, transparent 45%, rgba(0, 0, 0, 0.45) 100%);
+}
+
+@keyframes drift {
+    from { background-position: 0% 50%, 100% 50%, 50% 100%, 0% 0%; }
+    to   { background-position: 100% 20%, 0% 80%, 40% 0%, 100% 100%; }
+}
+
+@keyframes float-a {
+    from { transform: translate3d(0, 0, 0) scale(1); }
+    to   { transform: translate3d(12vmax, 8vmax, 0) scale(1.15); }
+}
+
+@keyframes float-b {
+    from { transform: translate3d(0, 0, 0) scale(1.1); }
+    to   { transform: translate3d(-10vmax, -9vmax, 0) scale(0.95); }
+}
+
+/* ---------- entrance transition ---------- */
+.stage {
+    width: 100%;
+    opacity: 0;
+    transform: translateY(26px);
+    transition: opacity 1s var(--ease), transform 1s var(--ease);
+}
+
+body.is-ready .stage {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.band {
+    position: relative;
+    padding: 18px 0;
+    background: var(--band);
+    border-top: 1px solid var(--band-line);
+    border-bottom: 1px solid var(--band-line);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    box-shadow: 0 24px 60px rgba(0, 0, 0, 0.28);
+    transition: background var(--fade) var(--ease), border-color var(--fade) var(--ease);
+}
+
+/* edge masks: text fades in/out instead of popping at the viewport edge */
+.band::before,
+.band::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 14vw;
+    max-width: 220px;
+    z-index: 2;
+    pointer-events: none;
+    transition: background var(--fade) var(--ease);
+}
+
+.band::before {
+    left: 0;
+    background: linear-gradient(to right, var(--bg-1), transparent);
+}
+
+.band::after {
+    right: 0;
+    background: linear-gradient(to left, var(--bg-1), transparent);
+}
+
+/* ---------- marquee ---------- */
+.marquee {
+    width: 100%;
+    height: 125px;
+    line-height: 122px;
+    color: var(--ink);
+    overflow: hidden;
+    white-space: nowrap;
+    font-size: 96px;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 500;
+    cursor: default;
+    text-shadow: 0 8px 28px rgba(0, 0, 0, 0.25);
+    transition: letter-spacing 0.6s var(--ease), filter 0.6s var(--ease),
+        color var(--fade) var(--ease);
+}
+
+.marquee .js-marquee-wrapper {
+    will-change: transform;
+}
+
+/* gentle visual cue while the scroll speed eases down on hover */
+.marquee.is-hovered {
+    letter-spacing: 0.02em;
+    filter: brightness(1.12);
+}
+
+.caption {
+    margin: 22px 0 0;
+    text-align: center;
+    font-size: 14px;
+    font-weight: 400;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    opacity: 0;
+    transform: translateY(10px);
+    transition: opacity 1s var(--ease) 0.35s, transform 1s var(--ease) 0.35s;
+}
+
+body.is-ready .caption {
+    opacity: 0.65;
+    transform: translateY(0);
+}
+
+@media only screen and (max-width: 767px) {
+    .marquee {
+        width: 100%;
+        height: 66px;
+        line-height: 46px;
+        font-size: 40px;
+    }
+
+    .band {
+        padding: 12px 0;
+    }
+
+    .caption {
+        font-size: 11px;
+        letter-spacing: 0.12em;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .bg,
+    .bg::before,
+    .bg::after {
+        animation: none;
+    }
+
+    .stage,
+    .caption {
+        transition: none;
+    }
+}
+    </style>
+</head>
+<body>
+    <div class="bg"></div>
+    <div class="bg-vignette"></div>
+
+    <div class="stage">
+        <div class="band">
+            <div class="marquee">
+                <div class="js-marquee-wrapper"></div>
+            </div>
+        </div>
+        <p class="caption">feel · drive · stay safe</p>
+    </div>
+
+    <script>
+        (function () {
+            var marquee = document.querySelector('.marquee');
+            var wrapper = document.querySelector('.js-marquee-wrapper');
+            if (!marquee || !wrapper) return;
+
+            var TEXT = 'FEEL THE DRIVE&nbsp;&nbsp;·&nbsp;&nbsp;DRIVE SAFE&nbsp;&nbsp;·&nbsp;&nbsp;';
+            var GAP = 56;
+            var BASE_SPEED = 60;
+            var SLOW_SPEED = 14;
+
+            var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+            var firstWidth = 0;
+            var x = 0;
+            var currentSpeed = BASE_SPEED;
+            var targetSpeed = BASE_SPEED;
+            var lastTime = 0;
+            var rafId = null;
+
+            function makeItem() {
+                var span = document.createElement('span');
+                span.className = 'js-marquee-item';
+                span.style.display = 'inline-block';
+                span.style.paddingRight = GAP + 'px';
+                span.innerHTML = TEXT;
+                return span;
+            }
+
+            function build() {
+                if (rafId) cancelAnimationFrame(rafId);
+                wrapper.innerHTML = '';
+
+                var item = makeItem();
+                wrapper.appendChild(item);
+                firstWidth = item.getBoundingClientRect().width;
+
+                var copies = Math.ceil((marquee.clientWidth + GAP) / firstWidth) + 2;
+                for (var i = 1; i < copies; i++) {
+                    wrapper.appendChild(makeItem());
+                }
+
+                x = 0;
+                wrapper.style.transform = 'translate3d(0, 0, 0)';
+
+                if (reduceMotion) return;
+
+                lastTime = 0;
+                rafId = requestAnimationFrame(tick);
+            }
+
+            function tick(now) {
+                if (lastTime) {
+                    var dt = (now - lastTime) / 1000;
+                    currentSpeed += (targetSpeed - currentSpeed) * 0.08;
+                    x -= currentSpeed * dt;
+                    if (x <= -firstWidth) x += firstWidth;
+                    wrapper.style.transform = 'translate3d(' + x + 'px, 0, 0)';
+                }
+                lastTime = now;
+                rafId = requestAnimationFrame(tick);
+            }
+
+            marquee.addEventListener('mouseenter', function () {
+                marquee.classList.add('is-hovered');
+                targetSpeed = SLOW_SPEED;
+            });
+
+            marquee.addEventListener('mouseleave', function () {
+                marquee.classList.remove('is-hovered');
+                targetSpeed = BASE_SPEED;
+            });
+
+            window.addEventListener('resize', build);
+
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', function () {
+                    document.body.classList.add('is-ready');
+                });
+            } else {
+                document.body.classList.add('is-ready');
+            }
+
+            build();
+            if (document.fonts && document.fonts.ready) {
+                document.fonts.ready.then(build);
+            }
+        })();
+    </script>
+</body>
+</html>
