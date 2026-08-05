@@ -3,28 +3,48 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="color-scheme" content="dark light">
     <title>feel drive safe marquee</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
 
     <style>
-/* ---------- theme tokens: every colour is a variable so a theme swap
-   can be cross-faded instead of snapping ---------- */
+/* ---------- theme tokens ---------- */
 :root {
     --bg-1: #041e2e;
     --bg-2: #0a5a72;
     --bg-3: #12a4a4;
+    --accent: #2ff2e0;
     --ink: #eafcff;
+    --ink-soft: rgba(234, 252, 255, 0.55);
     --band: rgba(255, 255, 255, 0.08);
     --band-line: rgba(255, 255, 255, 0.18);
+    --vignette: rgba(0, 0, 0, 0.5);
     --fade: 1.6s;
     --ease: cubic-bezier(0.22, 0.61, 0.36, 1);
 }
 
+:root[data-theme="light"] {
+    --bg-1: #f3faf8;
+    --bg-2: #a2dce5;
+    --bg-3: #1fa9a9;
+    --accent: #0b8f8f;
+    --ink: #073a49;
+    --ink-soft: rgba(7, 58, 73, 0.55);
+    --band: rgba(7, 58, 73, 0.06);
+    --band-line: rgba(7, 58, 73, 0.16);
+    --vignette: rgba(7, 58, 73, 0.14);
+}
+
 * {
     box-sizing: border-box;
+}
+
+html,
+body {
+    height: 100%;
 }
 
 body {
@@ -40,45 +60,75 @@ body {
     transition: background-color var(--fade) var(--ease), color var(--fade) var(--ease);
 }
 
-/* ---------- animated gradient background ---------- */
-.bg {
+/* ---------- animated gradient background (cross-faded theme layers) ---------- */
+.bg,
+.bg-light {
     position: fixed;
     inset: 0;
     z-index: -2;
-    background:
-        radial-gradient(60% 60% at 15% 20%, var(--bg-3) 0%, transparent 60%),
-        radial-gradient(55% 55% at 85% 25%, var(--bg-2) 0%, transparent 62%),
-        radial-gradient(70% 70% at 50% 100%, var(--bg-2) 0%, transparent 65%),
-        linear-gradient(160deg, var(--bg-1) 0%, var(--bg-2) 55%, var(--bg-1) 100%);
     background-size: 180% 180%, 180% 180%, 200% 200%, 200% 200%;
     animation: drift 26s ease-in-out infinite alternate;
 }
 
-/* soft drifting light blobs give the flat gradient some depth */
+.bg {
+    background:
+        radial-gradient(60% 60% at 15% 20%, #12a4a4 0%, transparent 60%),
+        radial-gradient(55% 55% at 85% 25%, #0a5a72 0%, transparent 62%),
+        radial-gradient(70% 70% at 50% 100%, #0a5a72 0%, transparent 65%),
+        linear-gradient(160deg, #041e2e 0%, #0a5a72 55%, #041e2e 100%);
+}
+
+.bg-light {
+    background:
+        radial-gradient(60% 60% at 15% 20%, #1fa9a9 0%, transparent 60%),
+        radial-gradient(55% 55% at 85% 25%, #a2dce5 0%, transparent 62%),
+        radial-gradient(70% 70% at 50% 100%, #a2dce5 0%, transparent 65%),
+        linear-gradient(160deg, #f3faf8 0%, #a2dce5 55%, #f3faf8 100%);
+    opacity: 0;
+    transition: opacity var(--fade) var(--ease);
+}
+
+:root[data-theme="light"] .bg-light {
+    opacity: 1;
+}
+
 .bg::before,
-.bg::after {
+.bg::after,
+.bg-light::before,
+.bg-light::after {
     content: '';
     position: absolute;
     width: 55vmax;
     height: 55vmax;
     border-radius: 50%;
     filter: blur(90px);
-    opacity: 0.45;
-    background: radial-gradient(circle at 30% 30%, var(--bg-3), transparent 70%);
     will-change: transform;
 }
 
-.bg::before {
+.bg::before,
+.bg-light::before {
     top: -18vmax;
     left: -12vmax;
+    opacity: 0.45;
+    background: radial-gradient(circle at 30% 30%, #12a4a4, transparent 70%);
     animation: float-a 18s ease-in-out infinite alternate;
 }
 
-.bg::after {
+.bg::after,
+.bg-light::after {
     right: -16vmax;
     bottom: -20vmax;
     opacity: 0.32;
+    background: radial-gradient(circle at 30% 30%, #0a5a72, transparent 70%);
     animation: float-b 22s ease-in-out infinite alternate;
+}
+
+.bg-light::before {
+    background: radial-gradient(circle at 30% 30%, #1fa9a9, transparent 70%);
+}
+
+.bg-light::after {
+    background: radial-gradient(circle at 30% 30%, #a2dce5, transparent 70%);
 }
 
 /* vignette keeps the marquee readable over the brightest blobs */
@@ -87,7 +137,17 @@ body {
     inset: 0;
     z-index: -1;
     pointer-events: none;
-    background: radial-gradient(120% 90% at 50% 50%, transparent 45%, rgba(0, 0, 0, 0.45) 100%);
+    background: radial-gradient(120% 90% at 50% 50%, transparent 45%, var(--vignette) 100%);
+}
+
+/* subtle film grain over everything */
+.grain {
+    position: fixed;
+    inset: 0;
+    z-index: 5;
+    pointer-events: none;
+    opacity: 0.055;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160' viewBox='0 0 160 160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)'/%3E%3C/svg%3E");
 }
 
 @keyframes drift {
@@ -105,19 +165,116 @@ body {
     to   { transform: translate3d(-10vmax, -9vmax, 0) scale(0.95); }
 }
 
-/* ---------- entrance transition ---------- */
+/* ---------- layout ---------- */
 .stage {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
     width: 100%;
+    min-height: 100vh;
+}
+
+.topbar,
+.footbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    max-width: 1240px;
+    margin: 0 auto;
+    padding: 0 clamp(1.25rem, 4vw, 3rem);
+}
+
+.topbar {
+    padding-top: clamp(1.5rem, 4vh, 3rem);
+    padding-bottom: clamp(1.5rem, 5vh, 3.5rem);
+}
+
+.footbar {
+    padding-top: clamp(1.5rem, 5vh, 3.5rem);
+    padding-bottom: clamp(1.25rem, 4vh, 2.5rem);
+}
+
+/* ---------- entrance ---------- */
+.topbar,
+.band,
+.footbar {
     opacity: 0;
-    transform: translateY(26px);
     transition: opacity 1s var(--ease), transform 1s var(--ease);
 }
 
-body.is-ready .stage {
-    opacity: 1;
-    transform: translateY(0);
+.topbar {
+    transform: translateY(-16px);
+    transition-delay: 0.05s;
 }
 
+.band {
+    transform: translateY(18px);
+    transition-delay: 0.18s;
+}
+
+.footbar {
+    transform: translateY(16px);
+    transition-delay: 0.32s;
+}
+
+body.is-ready .topbar,
+body.is-ready .band,
+body.is-ready .footbar {
+    opacity: 1;
+    transform: none;
+}
+
+/* ---------- top bar ---------- */
+.brand {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-size: 15px;
+    font-weight: 600;
+    letter-spacing: 0.32em;
+    text-transform: uppercase;
+}
+
+.brand-mark {
+    width: 30px;
+    height: 30px;
+    color: var(--accent);
+    filter: drop-shadow(0 0 10px var(--accent));
+}
+
+.status-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.45rem 0.9rem;
+    border: 1px solid var(--band-line);
+    border-radius: 999px;
+    background: var(--band);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.22em;
+    color: var(--ink-soft);
+    text-transform: uppercase;
+}
+
+.status-pill .dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #3ddc84;
+    animation: pulse 2.2s ease-out infinite;
+}
+
+@keyframes pulse {
+    0%   { box-shadow: 0 0 0 0 rgba(61, 220, 132, 0.55); }
+    70%  { box-shadow: 0 0 0 7px rgba(61, 220, 132, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(61, 220, 132, 0); }
+}
+
+/* ---------- band ---------- */
 .band {
     position: relative;
     padding: 18px 0;
@@ -127,7 +284,8 @@ body.is-ready .stage {
     backdrop-filter: blur(6px);
     -webkit-backdrop-filter: blur(6px);
     box-shadow: 0 24px 60px rgba(0, 0, 0, 0.28);
-    transition: background var(--fade) var(--ease), border-color var(--fade) var(--ease);
+    transition: opacity 1s var(--ease), transform 1s var(--ease),
+        background var(--fade) var(--ease), border-color var(--fade) var(--ease);
 }
 
 /* edge masks: text fades in/out instead of popping at the viewport edge */
@@ -141,7 +299,6 @@ body.is-ready .stage {
     max-width: 220px;
     z-index: 2;
     pointer-events: none;
-    transition: background var(--fade) var(--ease);
 }
 
 .band::before {
@@ -156,13 +313,14 @@ body.is-ready .stage {
 
 /* ---------- marquee ---------- */
 .marquee {
+    display: flex;
+    align-items: center;
     width: 100%;
-    height: 125px;
-    line-height: 122px;
-    color: var(--ink);
+    height: 128px;
     overflow: hidden;
     white-space: nowrap;
-    font-size: 96px;
+    color: var(--ink);
+    font-size: 92px;
     font-family: 'Poppins', sans-serif;
     font-weight: 500;
     cursor: default;
@@ -175,34 +333,114 @@ body.is-ready .stage {
     will-change: transform;
 }
 
+.marquee .js-marquee-item {
+    display: inline-block;
+    padding-right: 3.2rem;
+}
+
+.t-solid {
+    font-weight: 600;
+}
+
+.t-outline {
+    color: transparent;
+    -webkit-text-stroke: 2px var(--ink);
+}
+
+.t-dot {
+    display: inline-block;
+    margin: 0 1.5rem;
+    font-size: 0.5em;
+    color: var(--accent);
+    transform: translateY(-0.1em);
+    text-shadow: 0 0 18px var(--accent);
+}
+
 /* gentle visual cue while the scroll speed eases down on hover */
 .marquee.is-hovered {
     letter-spacing: 0.02em;
     filter: brightness(1.12);
 }
 
-.caption {
-    margin: 22px 0 0;
-    text-align: center;
-    font-size: 14px;
-    font-weight: 400;
-    letter-spacing: 0.18em;
+/* ---------- footer ---------- */
+.meta {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem 1.8rem;
+    flex-wrap: wrap;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.22em;
     text-transform: uppercase;
-    opacity: 0;
-    transform: translateY(10px);
-    transition: opacity 1s var(--ease) 0.35s, transform 1s var(--ease) 0.35s;
+    color: var(--ink-soft);
 }
 
-body.is-ready .caption {
-    opacity: 0.65;
-    transform: translateY(0);
+.meta li {
+    display: inline-flex;
+    align-items: center;
+    gap: 1.8rem;
 }
 
+.meta li + li::before {
+    content: '';
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background: var(--accent);
+    opacity: 0.7;
+}
+
+.theme-toggle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 42px;
+    height: 42px;
+    padding: 0;
+    border: 1px solid var(--band-line);
+    border-radius: 50%;
+    background: var(--band);
+    color: var(--ink);
+    cursor: pointer;
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    transition: background 0.4s var(--ease), transform 0.4s var(--ease),
+        color var(--fade) var(--ease), border-color var(--fade) var(--ease);
+}
+
+.theme-toggle:hover {
+    background: var(--band-line);
+    transform: rotate(18deg) scale(1.06);
+}
+
+.theme-toggle:active {
+    transform: scale(0.94);
+}
+
+.theme-toggle svg {
+    width: 19px;
+    height: 19px;
+}
+
+.theme-toggle .icon-moon {
+    display: none;
+}
+
+:root[data-theme="light"] .theme-toggle .icon-sun {
+    display: none;
+}
+
+:root[data-theme="light"] .theme-toggle .icon-moon {
+    display: block;
+}
+
+/* ---------- responsive ---------- */
 @media only screen and (max-width: 767px) {
     .marquee {
-        width: 100%;
         height: 66px;
-        line-height: 46px;
         font-size: 40px;
     }
 
@@ -210,21 +448,50 @@ body.is-ready .caption {
         padding: 12px 0;
     }
 
-    .caption {
-        font-size: 11px;
-        letter-spacing: 0.12em;
+    .status-pill {
+        display: none;
+    }
+
+    .brand {
+        font-size: 12px;
+        letter-spacing: 0.24em;
+    }
+
+    .brand-mark {
+        width: 24px;
+        height: 24px;
+    }
+
+    .meta {
+        font-size: 9px;
+        letter-spacing: 0.16em;
+    }
+
+    .footbar {
+        flex-wrap: wrap;
+        gap: 0.8rem 1rem;
+        justify-content: center;
     }
 }
 
 @media (prefers-reduced-motion: reduce) {
     .bg,
+    .bg-light,
     .bg::before,
-    .bg::after {
+    .bg::after,
+    .bg-light::before,
+    .bg-light::after,
+    .status-pill .dot {
         animation: none;
     }
 
-    .stage,
-    .caption {
+    .bg-light {
+        transition: none;
+    }
+
+    .topbar,
+    .band,
+    .footbar {
         transition: none;
     }
 }
@@ -232,27 +499,63 @@ body.is-ready .caption {
 </head>
 <body>
     <div class="bg"></div>
+    <div class="bg-light"></div>
     <div class="bg-vignette"></div>
+    <div class="grain"></div>
 
     <div class="stage">
+        <header class="topbar">
+            <div class="brand">
+                <svg class="brand-mark" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                    stroke-width="1.6" stroke-linecap="round" aria-hidden="true">
+                    <circle cx="12" cy="12" r="9.5"/>
+                    <circle cx="12" cy="12" r="2.4"/>
+                    <path d="M12 9.6 12 2.8"/>
+                    <path d="M9.6 12 2.8 12"/>
+                    <path d="M14.4 12 21.2 12"/>
+                    <path d="M4.6 18.4 9.3 15.9"/>
+                    <path d="M19.4 18.4 14.7 15.9"/>
+                </svg>
+                <span>Feel&nbsp;the&nbsp;Drive</span>
+            </div>
+            <span class="status-pill"><span class="dot"></span>Live</span>
+        </header>
+
         <div class="band">
-            <div class="marquee">
+            <div class="marquee" role="region" aria-label="Scrolling safety messages">
                 <div class="js-marquee-wrapper"></div>
             </div>
         </div>
-        <p class="caption">feel · drive · stay safe</p>
+
+        <footer class="footbar">
+            <ul class="meta">
+                <li>Keep your distance</li>
+                <li>Stay in your lane</li>
+                <li>All systems nominal</li>
+            </ul>
+            <button class="theme-toggle" type="button" aria-label="Toggle light and dark theme" title="Toggle theme">
+                <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                    stroke-width="1.8" stroke-linecap="round" aria-hidden="true">
+                    <circle cx="12" cy="12" r="4.2"/>
+                    <path d="M12 2.8v2.2M12 19v2.2M2.8 12H5M19 12h2.2M5.2 5.2l1.6 1.6M17.2 17.2l1.6 1.6M18.8 5.2l-1.6 1.6M6.8 17.2l-1.6 1.6"/>
+                </svg>
+                <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                    stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <path d="M20 14.5A8.5 8.5 0 0 1 9.5 4a8.5 8.5 0 1 0 10.5 10.5Z"/>
+                </svg>
+            </button>
+        </footer>
     </div>
 
     <script>
         (function () {
             var marquee = document.querySelector('.marquee');
             var wrapper = document.querySelector('.js-marquee-wrapper');
+            var toggle = document.querySelector('.theme-toggle');
             if (!marquee || !wrapper) return;
 
-            var TEXT = 'FEEL THE DRIVE&nbsp;&nbsp;·&nbsp;&nbsp;DRIVE SAFE&nbsp;&nbsp;·&nbsp;&nbsp;';
-            var GAP = 56;
-            var BASE_SPEED = 60;
-            var SLOW_SPEED = 14;
+            var BASE_SPEED = 64;
+            var SLOW_SPEED = 16;
 
             var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
             var firstWidth = 0;
@@ -265,9 +568,11 @@ body.is-ready .caption {
             function makeItem() {
                 var span = document.createElement('span');
                 span.className = 'js-marquee-item';
-                span.style.display = 'inline-block';
-                span.style.paddingRight = GAP + 'px';
-                span.innerHTML = TEXT;
+                span.innerHTML =
+                    '<span class="t-solid">FEEL THE DRIVE</span>' +
+                    '<span class="t-dot" aria-hidden="true">·</span>' +
+                    '<span class="t-outline">DRIVE SAFE</span>' +
+                    '<span class="t-dot" aria-hidden="true">·</span>';
                 return span;
             }
 
@@ -279,7 +584,7 @@ body.is-ready .caption {
                 wrapper.appendChild(item);
                 firstWidth = item.getBoundingClientRect().width;
 
-                var copies = Math.ceil((marquee.clientWidth + GAP) / firstWidth) + 2;
+                var copies = Math.ceil((marquee.clientWidth + 64) / firstWidth) + 2;
                 for (var i = 1; i < copies; i++) {
                     wrapper.appendChild(makeItem());
                 }
@@ -317,17 +622,42 @@ body.is-ready .caption {
 
             window.addEventListener('resize', build);
 
-            if (document.readyState === 'loading') {
-                document.addEventListener('DOMContentLoaded', function () {
-                    document.body.classList.add('is-ready');
+            // theme toggle
+            var root = document.documentElement;
+            var stored = null;
+            try {
+                stored = localStorage.getItem('marquee-theme');
+            } catch (e) {}
+
+            if (stored === 'light' || stored === 'dark') {
+                root.setAttribute('data-theme', stored);
+            }
+
+            if (toggle) {
+                toggle.addEventListener('click', function () {
+                    var next = root.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
+                    root.setAttribute('data-theme', next);
+                    try {
+                        localStorage.setItem('marquee-theme', next);
+                    } catch (e) {}
                 });
-            } else {
+            }
+
+            // reveal only once fonts are ready so the entrance uses final typography
+            function reveal() {
                 document.body.classList.add('is-ready');
             }
 
             build();
             if (document.fonts && document.fonts.ready) {
-                document.fonts.ready.then(build);
+                var fallback = setTimeout(reveal, 2200);
+                document.fonts.ready.then(function () {
+                    clearTimeout(fallback);
+                    reveal();
+                    build();
+                });
+            } else {
+                reveal();
             }
         })();
     </script>
