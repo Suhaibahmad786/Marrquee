@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="color-scheme" content="dark light">
-    <title>feel drive safe marquee</title>
+    <title>Suhaib Amad | Software Engineer</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -13,29 +13,33 @@
     <style>
 /* ---------- theme tokens ---------- */
 :root {
-    --bg-1: #041e2e;
-    --bg-2: #0a5a72;
-    --bg-3: #12a4a4;
-    --accent: #2ff2e0;
-    --ink: #eafcff;
-    --ink-soft: rgba(234, 252, 255, 0.55);
-    --band: rgba(255, 255, 255, 0.08);
-    --band-line: rgba(255, 255, 255, 0.18);
-    --vignette: rgba(0, 0, 0, 0.5);
+    --bg-1: #f5f8fc;
+    --bg-2: #dde9f6;
+    --bg-3: #7fb2e0;
+    --accent: #2f6fed;
+    --ink: #0d1b2e;
+    --ink-soft: rgba(13, 27, 46, 0.58);
+    --band: rgba(13, 27, 46, 0.05);
+    --band-line: rgba(13, 27, 46, 0.13);
+    --vignette: rgba(13, 27, 46, 0.15);
+    --shadow: 0 10px 30px rgba(13, 27, 46, 0.16);
+    --band-shadow: 0 24px 60px rgba(13, 27, 46, 0.13);
     --fade: 1.6s;
     --ease: cubic-bezier(0.22, 0.61, 0.36, 1);
 }
 
-:root[data-theme="light"] {
-    --bg-1: #f3faf8;
-    --bg-2: #a2dce5;
-    --bg-3: #1fa9a9;
-    --accent: #0b8f8f;
-    --ink: #073a49;
-    --ink-soft: rgba(7, 58, 73, 0.55);
-    --band: rgba(7, 58, 73, 0.06);
-    --band-line: rgba(7, 58, 73, 0.16);
-    --vignette: rgba(7, 58, 73, 0.14);
+:root[data-theme="dark"] {
+    --bg-1: #0a1220;
+    --bg-2: #16283f;
+    --bg-3: #2e5a8f;
+    --accent: #6cb6ff;
+    --ink: #eef5ff;
+    --ink-soft: rgba(238, 245, 255, 0.6);
+    --band: rgba(255, 255, 255, 0.06);
+    --band-line: rgba(255, 255, 255, 0.14);
+    --vignette: rgba(0, 0, 0, 0.5);
+    --shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+    --band-shadow: 0 24px 60px rgba(0, 0, 0, 0.3);
 }
 
 * {
@@ -62,7 +66,7 @@ body {
 
 /* ---------- animated gradient background (cross-faded theme layers) ---------- */
 .bg,
-.bg-light {
+.bg-dark {
     position: fixed;
     inset: 0;
     z-index: -2;
@@ -72,30 +76,30 @@ body {
 
 .bg {
     background:
-        radial-gradient(60% 60% at 15% 20%, #12a4a4 0%, transparent 60%),
-        radial-gradient(55% 55% at 85% 25%, #0a5a72 0%, transparent 62%),
-        radial-gradient(70% 70% at 50% 100%, #0a5a72 0%, transparent 65%),
-        linear-gradient(160deg, #041e2e 0%, #0a5a72 55%, #041e2e 100%);
+        radial-gradient(60% 60% at 15% 20%, var(--bg-3) 0%, transparent 60%),
+        radial-gradient(55% 55% at 85% 25%, var(--bg-2) 0%, transparent 62%),
+        radial-gradient(70% 70% at 50% 100%, var(--bg-2) 0%, transparent 65%),
+        linear-gradient(160deg, var(--bg-1) 0%, var(--bg-2) 55%, var(--bg-1) 100%);
 }
 
-.bg-light {
+.bg-dark {
     background:
-        radial-gradient(60% 60% at 15% 20%, #1fa9a9 0%, transparent 60%),
-        radial-gradient(55% 55% at 85% 25%, #a2dce5 0%, transparent 62%),
-        radial-gradient(70% 70% at 50% 100%, #a2dce5 0%, transparent 65%),
-        linear-gradient(160deg, #f3faf8 0%, #a2dce5 55%, #f3faf8 100%);
+        radial-gradient(60% 60% at 15% 20%, var(--bg-3) 0%, transparent 60%),
+        radial-gradient(55% 55% at 85% 25%, var(--bg-2) 0%, transparent 62%),
+        radial-gradient(70% 70% at 50% 100%, var(--bg-2) 0%, transparent 65%),
+        linear-gradient(160deg, var(--bg-1) 0%, var(--bg-2) 55%, var(--bg-1) 100%);
     opacity: 0;
     transition: opacity var(--fade) var(--ease);
 }
 
-:root[data-theme="light"] .bg-light {
+:root[data-theme="dark"] .bg-dark {
     opacity: 1;
 }
 
 .bg::before,
 .bg::after,
-.bg-light::before,
-.bg-light::after {
+.bg-dark::before,
+.bg-dark::after {
     content: '';
     position: absolute;
     width: 55vmax;
@@ -106,29 +110,29 @@ body {
 }
 
 .bg::before,
-.bg-light::before {
+.bg-dark::before {
     top: -18vmax;
     left: -12vmax;
     opacity: 0.45;
-    background: radial-gradient(circle at 30% 30%, #12a4a4, transparent 70%);
+    background: radial-gradient(circle at 30% 30%, var(--bg-3), transparent 70%);
     animation: float-a 18s ease-in-out infinite alternate;
 }
 
 .bg::after,
-.bg-light::after {
+.bg-dark::after {
     right: -16vmax;
     bottom: -20vmax;
     opacity: 0.32;
-    background: radial-gradient(circle at 30% 30%, #0a5a72, transparent 70%);
+    background: radial-gradient(circle at 30% 30%, var(--bg-2), transparent 70%);
     animation: float-b 22s ease-in-out infinite alternate;
 }
 
-.bg-light::before {
-    background: radial-gradient(circle at 30% 30%, #1fa9a9, transparent 70%);
+.bg-dark::before {
+    background: radial-gradient(circle at 30% 30%, var(--bg-3), transparent 70%);
 }
 
-.bg-light::after {
-    background: radial-gradient(circle at 30% 30%, #a2dce5, transparent 70%);
+.bg-dark::after {
+    background: radial-gradient(circle at 30% 30%, var(--bg-2), transparent 70%);
 }
 
 /* vignette keeps the marquee readable over the brightest blobs */
@@ -283,7 +287,7 @@ body.is-ready .footbar {
     border-bottom: 1px solid var(--band-line);
     backdrop-filter: blur(6px);
     -webkit-backdrop-filter: blur(6px);
-    box-shadow: 0 24px 60px rgba(0, 0, 0, 0.28);
+    box-shadow: var(--band-shadow);
     transition: opacity 1s var(--ease), transform 1s var(--ease),
         background var(--fade) var(--ease), border-color var(--fade) var(--ease);
 }
@@ -324,7 +328,7 @@ body.is-ready .footbar {
     font-family: 'Poppins', sans-serif;
     font-weight: 500;
     cursor: default;
-    text-shadow: 0 8px 28px rgba(0, 0, 0, 0.25);
+    text-shadow: var(--shadow);
     transition: letter-spacing 0.6s var(--ease), filter 0.6s var(--ease),
         color var(--fade) var(--ease);
 }
@@ -429,11 +433,11 @@ body.is-ready .footbar {
     display: none;
 }
 
-:root[data-theme="light"] .theme-toggle .icon-sun {
+:root[data-theme="dark"] .theme-toggle .icon-sun {
     display: none;
 }
 
-:root[data-theme="light"] .theme-toggle .icon-moon {
+:root[data-theme="dark"] .theme-toggle .icon-moon {
     display: block;
 }
 
@@ -476,16 +480,16 @@ body.is-ready .footbar {
 
 @media (prefers-reduced-motion: reduce) {
     .bg,
-    .bg-light,
+    .bg-dark,
     .bg::before,
     .bg::after,
-    .bg-light::before,
-    .bg-light::after,
+    .bg-dark::before,
+    .bg-dark::after,
     .status-pill .dot {
         animation: none;
     }
 
-    .bg-light {
+    .bg-dark {
         transition: none;
     }
 
@@ -499,7 +503,7 @@ body.is-ready .footbar {
 </head>
 <body>
     <div class="bg"></div>
-    <div class="bg-light"></div>
+    <div class="bg-dark"></div>
     <div class="bg-vignette"></div>
     <div class="grain"></div>
 
@@ -516,21 +520,21 @@ body.is-ready .footbar {
                     <path d="M4.6 18.4 9.3 15.9"/>
                     <path d="M19.4 18.4 14.7 15.9"/>
                 </svg>
-                <span>Feel&nbsp;the&nbsp;Drive</span>
+                <span>Suhaib&nbsp;Amad</span>
             </div>
             <span class="status-pill"><span class="dot"></span>Live</span>
         </header>
 
         <div class="band">
-            <div class="marquee" role="region" aria-label="Scrolling safety messages">
+            <div class="marquee" role="region" aria-label="Scrolling name and title">
                 <div class="js-marquee-wrapper"></div>
             </div>
         </div>
 
         <footer class="footbar">
             <ul class="meta">
-                <li>Keep your distance</li>
-                <li>Stay in your lane</li>
+                <li>Code with care</li>
+                <li>Ship clean code</li>
                 <li>All systems nominal</li>
             </ul>
             <button class="theme-toggle" type="button" aria-label="Toggle light and dark theme" title="Toggle theme">
@@ -569,9 +573,9 @@ body.is-ready .footbar {
                 var span = document.createElement('span');
                 span.className = 'js-marquee-item';
                 span.innerHTML =
-                    '<span class="t-solid">FEEL THE DRIVE</span>' +
+                    '<span class="t-solid">SUHAIB AMAD</span>' +
                     '<span class="t-dot" aria-hidden="true">·</span>' +
-                    '<span class="t-outline">DRIVE SAFE</span>' +
+                    '<span class="t-outline">SOFTWARE ENGINEER</span>' +
                     '<span class="t-dot" aria-hidden="true">·</span>';
                 return span;
             }
@@ -635,10 +639,14 @@ body.is-ready .footbar {
 
             if (toggle) {
                 toggle.addEventListener('click', function () {
-                    var next = root.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
-                    root.setAttribute('data-theme', next);
+                    var next = root.getAttribute('data-theme') === 'dark' ? null : 'dark';
+                    if (next) {
+                        root.setAttribute('data-theme', next);
+                    } else {
+                        root.removeAttribute('data-theme');
+                    }
                     try {
-                        localStorage.setItem('marquee-theme', next);
+                        localStorage.setItem('marquee-theme', next || 'light');
                     } catch (e) {}
                 });
             }
