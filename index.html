@@ -4,7 +4,42 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="color-scheme" content="dark light">
+    <meta name="description" content="Suhaib Amad — Software Engineer. Building full-stack products with care. Open to work.">
+    <meta name="theme-color" content="#f5f8fc">
+
     <title>Suhaib Amad | Software Engineer</title>
+
+    <link rel="icon" href="favicon.svg" type="image/svg+xml">
+    <link rel="canonical" href="https://suhaibamad.com/">
+
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Suhaib Amad | Software Engineer">
+    <meta property="og:description" content="Suhaib Amad — Software Engineer. Building full-stack products with care. Open to work.">
+    <meta property="og:url" content="https://suhaibamad.com/">
+    <meta property="og:image" content="https://suhaibamad.com/og-image.svg">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Suhaib Amad | Software Engineer">
+    <meta name="twitter:description" content="Suhaib Amad — Software Engineer. Building full-stack products with care. Open to work.">
+    <meta name="twitter:image" content="https://suhaibamad.com/og-image.svg">
+
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "Person",
+        "name": "Suhaib Amad",
+        "jobTitle": "Software Engineer",
+        "url": "https://suhaibamad.com/",
+        "email": "hello@suhaibamad.com",
+        "sameAs": [
+            "https://github.com/suhaibamad",
+            "https://linkedin.com/in/suhaibamad"
+        ]
+    }
+    </script>
+
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -21,9 +56,11 @@
     --ink-soft: rgba(13, 27, 46, 0.58);
     --band: rgba(13, 27, 46, 0.05);
     --band-line: rgba(13, 27, 46, 0.13);
+    --mask-color: #f5f8fc;
     --vignette: rgba(13, 27, 46, 0.15);
     --shadow: 0 10px 30px rgba(13, 27, 46, 0.16);
     --band-shadow: 0 24px 60px rgba(13, 27, 46, 0.13);
+    --focus-ring: 0 0 0 3px rgba(47, 111, 237, 0.45);
     --fade: 1.6s;
     --ease: cubic-bezier(0.22, 0.61, 0.36, 1);
 }
@@ -37,9 +74,11 @@
     --ink-soft: rgba(238, 245, 255, 0.6);
     --band: rgba(255, 255, 255, 0.06);
     --band-line: rgba(255, 255, 255, 0.14);
+    --mask-color: #0a1220;
     --vignette: rgba(0, 0, 0, 0.5);
     --shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
     --band-shadow: 0 24px 60px rgba(0, 0, 0, 0.3);
+    --focus-ring: 0 0 0 3px rgba(108, 182, 255, 0.45);
 }
 
 * {
@@ -135,7 +174,6 @@ body {
     background: radial-gradient(circle at 30% 30%, var(--bg-2), transparent 70%);
 }
 
-/* vignette keeps the marquee readable over the brightest blobs */
 .bg-vignette {
     position: fixed;
     inset: 0;
@@ -144,7 +182,6 @@ body {
     background: radial-gradient(120% 90% at 50% 50%, transparent 45%, var(--vignette) 100%);
 }
 
-/* subtle film grain over everything */
 .grain {
     position: fixed;
     inset: 0;
@@ -167,6 +204,11 @@ body {
 @keyframes float-b {
     from { transform: translate3d(0, 0, 0) scale(1.1); }
     to   { transform: translate3d(-10vmax, -9vmax, 0) scale(0.95); }
+}
+
+@keyframes brand-spin {
+    from { transform: rotate(0deg); }
+    to   { transform: rotate(360deg); }
 }
 
 /* ---------- layout ---------- */
@@ -197,6 +239,20 @@ body {
 .footbar {
     padding-top: clamp(1.5rem, 5vh, 3.5rem);
     padding-bottom: clamp(1.25rem, 4vh, 2.5rem);
+    gap: 1rem;
+}
+
+.footbar-start {
+    display: flex;
+    flex-direction: column;
+    gap: 0.65rem;
+}
+
+.footbar-controls {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex-shrink: 0;
 }
 
 /* ---------- entrance ---------- */
@@ -238,6 +294,18 @@ body.is-ready .footbar {
     font-weight: 600;
     letter-spacing: 0.32em;
     text-transform: uppercase;
+    background: none;
+    border: none;
+    padding: 0;
+    color: inherit;
+    cursor: pointer;
+    font-family: inherit;
+}
+
+.brand:focus-visible {
+    outline: none;
+    box-shadow: var(--focus-ring);
+    border-radius: 6px;
 }
 
 .brand-mark {
@@ -245,6 +313,11 @@ body.is-ready .footbar {
     height: 30px;
     color: var(--accent);
     filter: drop-shadow(0 0 10px var(--accent));
+    transition: transform 0.6s var(--ease);
+}
+
+.brand.is-spinning .brand-mark {
+    animation: brand-spin 0.7s var(--ease);
 }
 
 .status-pill {
@@ -292,7 +365,6 @@ body.is-ready .footbar {
         background var(--fade) var(--ease), border-color var(--fade) var(--ease);
 }
 
-/* edge masks: text fades in/out instead of popping at the viewport edge */
 .band::before,
 .band::after {
     content: '';
@@ -307,12 +379,12 @@ body.is-ready .footbar {
 
 .band::before {
     left: 0;
-    background: linear-gradient(to right, var(--bg-1), transparent);
+    background: linear-gradient(to right, var(--mask-color), transparent);
 }
 
 .band::after {
     right: 0;
-    background: linear-gradient(to left, var(--bg-1), transparent);
+    background: linear-gradient(to left, var(--mask-color), transparent);
 }
 
 /* ---------- marquee ---------- */
@@ -342,6 +414,23 @@ body.is-ready .footbar {
     padding-right: 3.2rem;
 }
 
+.marquee--static {
+    justify-content: center;
+}
+
+.marquee--static .js-marquee-wrapper {
+    transform: none !important;
+    will-change: auto;
+}
+
+.marquee--static .js-marquee-item:not(:first-child) {
+    display: none;
+}
+
+.marquee--static .js-marquee-item:first-child {
+    padding-right: 0;
+}
+
 .t-solid {
     font-weight: 600;
 }
@@ -360,14 +449,18 @@ body.is-ready .footbar {
     text-shadow: 0 0 18px var(--accent);
 }
 
-/* gentle visual cue while the scroll speed eases down on hover */
 .marquee.is-hovered {
     letter-spacing: 0.02em;
     filter: brightness(1.12);
 }
 
+.marquee.is-paused {
+    filter: brightness(1.06);
+}
+
 /* ---------- footer ---------- */
-.meta {
+.meta,
+.links ul {
     display: flex;
     align-items: center;
     gap: 0.5rem 1.8rem;
@@ -382,13 +475,15 @@ body.is-ready .footbar {
     color: var(--ink-soft);
 }
 
-.meta li {
+.meta li,
+.links li {
     display: inline-flex;
     align-items: center;
     gap: 1.8rem;
 }
 
-.meta li + li::before {
+.meta li + li::before,
+.links li + li::before {
     content: '';
     width: 4px;
     height: 4px;
@@ -397,7 +492,36 @@ body.is-ready .footbar {
     opacity: 0.7;
 }
 
-.theme-toggle {
+.links a,
+.link-btn {
+    color: var(--ink-soft);
+    text-decoration: none;
+    background: none;
+    border: none;
+    padding: 0;
+    font: inherit;
+    letter-spacing: inherit;
+    text-transform: inherit;
+    cursor: pointer;
+    transition: color 0.3s var(--ease);
+}
+
+.links a:hover,
+.link-btn:hover {
+    color: var(--accent);
+    text-decoration: underline;
+}
+
+.links a:focus-visible,
+.link-btn:focus-visible,
+.theme-toggle:focus-visible,
+.pause-toggle:focus-visible {
+    outline: none;
+    box-shadow: var(--focus-ring);
+    border-radius: 4px;
+}
+
+.icon-btn {
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -415,21 +539,26 @@ body.is-ready .footbar {
         color var(--fade) var(--ease), border-color var(--fade) var(--ease);
 }
 
-.theme-toggle:hover {
+.icon-btn:hover {
     background: var(--band-line);
-    transform: rotate(18deg) scale(1.06);
+    transform: scale(1.06);
 }
 
-.theme-toggle:active {
+.icon-btn:active {
     transform: scale(0.94);
 }
 
-.theme-toggle svg {
+.icon-btn svg {
     width: 19px;
     height: 19px;
 }
 
-.theme-toggle .icon-moon {
+.theme-toggle:hover {
+    transform: rotate(18deg) scale(1.06);
+}
+
+.theme-toggle .icon-moon,
+.pause-toggle .icon-play {
     display: none;
 }
 
@@ -439,6 +568,42 @@ body.is-ready .footbar {
 
 :root[data-theme="dark"] .theme-toggle .icon-moon {
     display: block;
+}
+
+.pause-toggle.is-paused .icon-pause {
+    display: none;
+}
+
+.pause-toggle.is-paused .icon-play {
+    display: block;
+}
+
+/* ---------- toast ---------- */
+.toast {
+    position: fixed;
+    bottom: clamp(1.25rem, 4vh, 2.5rem);
+    left: 50%;
+    z-index: 10;
+    padding: 0.55rem 1.1rem;
+    border: 1px solid var(--band-line);
+    border-radius: 999px;
+    background: var(--band);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    color: var(--ink);
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    pointer-events: none;
+    opacity: 0;
+    transform: translate(-50%, 12px);
+    transition: opacity 0.35s var(--ease), transform 0.35s var(--ease);
+}
+
+.toast.is-visible {
+    opacity: 1;
+    transform: translate(-50%, 0);
 }
 
 /* ---------- responsive ---------- */
@@ -466,15 +631,20 @@ body.is-ready .footbar {
         height: 24px;
     }
 
-    .meta {
+    .meta,
+    .links ul {
         font-size: 9px;
         letter-spacing: 0.16em;
     }
 
     .footbar {
         flex-wrap: wrap;
-        gap: 0.8rem 1rem;
         justify-content: center;
+    }
+
+    .footbar-start {
+        align-items: center;
+        text-align: center;
     }
 }
 
@@ -498,6 +668,10 @@ body.is-ready .footbar {
     .footbar {
         transition: none;
     }
+
+    .brand.is-spinning .brand-mark {
+        animation: none;
+    }
 }
     </style>
 </head>
@@ -509,7 +683,7 @@ body.is-ready .footbar {
 
     <div class="stage">
         <header class="topbar">
-            <div class="brand">
+            <button class="brand" type="button" aria-label="Suhaib Amad — visit GitHub profile">
                 <svg class="brand-mark" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                     stroke-width="1.6" stroke-linecap="round" aria-hidden="true">
                     <circle cx="12" cy="12" r="9.5"/>
@@ -521,41 +695,89 @@ body.is-ready .footbar {
                     <path d="M19.4 18.4 14.7 15.9"/>
                 </svg>
                 <span>Suhaib&nbsp;Amad</span>
-            </div>
-            <span class="status-pill"><span class="dot"></span>Live</span>
+            </button>
+            <span class="status-pill" aria-label="Available for work"><span class="dot"></span>Open to work</span>
         </header>
 
         <div class="band">
-            <div class="marquee" role="region" aria-label="Scrolling name and title">
+            <div class="marquee" role="region" aria-label="Scrolling name and title" aria-live="polite">
                 <div class="js-marquee-wrapper"></div>
             </div>
         </div>
 
         <footer class="footbar">
-            <ul class="meta">
-                <li>Code with care</li>
-                <li>Ship clean code</li>
-                <li>All systems nominal</li>
-            </ul>
-            <button class="theme-toggle" type="button" aria-label="Toggle light and dark theme" title="Toggle theme">
-                <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                    stroke-width="1.8" stroke-linecap="round" aria-hidden="true">
-                    <circle cx="12" cy="12" r="4.2"/>
-                    <path d="M12 2.8v2.2M12 19v2.2M2.8 12H5M19 12h2.2M5.2 5.2l1.6 1.6M17.2 17.2l1.6 1.6M18.8 5.2l-1.6 1.6M6.8 17.2l-1.6 1.6"/>
-                </svg>
-                <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                    stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                    <path d="M20 14.5A8.5 8.5 0 0 1 9.5 4a8.5 8.5 0 1 0 10.5 10.5Z"/>
-                </svg>
-            </button>
+            <div class="footbar-start">
+                <ul class="meta">
+                    <li>Code with care</li>
+                    <li>Ship clean code</li>
+                    <li>All systems nominal</li>
+                </ul>
+                <nav class="links" aria-label="Contact and social">
+                    <ul>
+                        <li><a href="https://github.com/suhaibamad" target="_blank" rel="noopener noreferrer">GitHub</a></li>
+                        <li><a href="https://linkedin.com/in/suhaibamad" target="_blank" rel="noopener noreferrer">LinkedIn</a></li>
+                        <li><button type="button" class="link-btn" data-copy-email aria-label="Copy email address">Email</button></li>
+                    </ul>
+                </nav>
+            </div>
+            <div class="footbar-controls">
+                <button class="pause-toggle icon-btn" type="button"
+                    aria-label="Pause scrolling text" aria-pressed="false"
+                    title="Pause marquee (Space)">
+                    <svg class="icon-pause" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="1.8" stroke-linecap="round" aria-hidden="true">
+                        <path d="M8 6v12M16 6v12"/>
+                    </svg>
+                    <svg class="icon-play" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <path d="M8 5.5v13l10-6.5-10-6.5Z"/>
+                    </svg>
+                </button>
+                <button class="theme-toggle icon-btn" type="button"
+                    aria-label="Toggle light and dark theme" aria-pressed="false"
+                    title="Toggle theme (T)">
+                    <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="1.8" stroke-linecap="round" aria-hidden="true">
+                        <circle cx="12" cy="12" r="4.2"/>
+                        <path d="M12 2.8v2.2M12 19v2.2M2.8 12H5M19 12h2.2M5.2 5.2l1.6 1.6M17.2 17.2l1.6 1.6M18.8 5.2l-1.6 1.6M6.8 17.2l-1.6 1.6"/>
+                    </svg>
+                    <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <path d="M20 14.5A8.5 8.5 0 0 1 9.5 4a8.5 8.5 0 1 0 10.5 10.5Z"/>
+                    </svg>
+                </button>
+            </div>
         </footer>
     </div>
 
+    <div class="toast" role="status" aria-live="polite"></div>
+
     <script>
         (function () {
+            var CONFIG = {
+                email: 'hello@suhaibamad.com',
+                github: 'https://github.com/suhaibamad',
+                phrases: [
+                    { solid: 'SUHAIB AMAD', outline: 'SOFTWARE ENGINEER' },
+                    { solid: 'FULL-STACK', outline: 'REACT · NODE' },
+                    { solid: 'BUILD', outline: 'SHIP · ITERATE' },
+                    { solid: 'CODE WITH CARE', outline: 'SHIP CLEAN CODE' }
+                ]
+            };
+
+            var THEME_KEY = 'marquee-theme';
+            var OVERRIDE_KEY = 'marquee-theme-override';
+            var PHRASE_INTERVAL = 4000;
+
             var marquee = document.querySelector('.marquee');
             var wrapper = document.querySelector('.js-marquee-wrapper');
             var toggle = document.querySelector('.theme-toggle');
+            var pauseBtn = document.querySelector('.pause-toggle');
+            var brandBtn = document.querySelector('.brand');
+            var copyEmailBtn = document.querySelector('[data-copy-email]');
+            var toast = document.querySelector('.toast');
+            var root = document.documentElement;
+
             if (!marquee || !wrapper) return;
 
             var BASE_SPEED = 64;
@@ -568,21 +790,56 @@ body.is-ready .footbar {
             var targetSpeed = BASE_SPEED;
             var lastTime = 0;
             var rafId = null;
+            var resizeTimer = null;
+            var phraseTimer = null;
+            var toastTimer = null;
+
+            var isHovered = false;
+            var isPaused = false;
+            var isTabVisible = !document.hidden;
+            var phraseIndex = 0;
+
+            function getPhrase() {
+                return CONFIG.phrases[phraseIndex] || CONFIG.phrases[0];
+            }
 
             function makeItem() {
+                var phrase = getPhrase();
                 var span = document.createElement('span');
                 span.className = 'js-marquee-item';
                 span.innerHTML =
-                    '<span class="t-solid">SUHAIB AMAD</span>' +
+                    '<span class="t-solid">' + phrase.solid + '</span>' +
                     '<span class="t-dot" aria-hidden="true">·</span>' +
-                    '<span class="t-outline">SOFTWARE ENGINEER</span>' +
+                    '<span class="t-outline">' + phrase.outline + '</span>' +
                     '<span class="t-dot" aria-hidden="true">·</span>';
                 return span;
             }
 
+            function stopAnimation() {
+                if (rafId) {
+                    cancelAnimationFrame(rafId);
+                    rafId = null;
+                }
+            }
+
+            function startAnimation() {
+                if (reduceMotion || isPaused || !isTabVisible) return;
+                if (rafId) return;
+                lastTime = 0;
+                rafId = requestAnimationFrame(tick);
+            }
+
             function build() {
-                if (rafId) cancelAnimationFrame(rafId);
+                stopAnimation();
                 wrapper.innerHTML = '';
+
+                if (reduceMotion) {
+                    marquee.classList.add('marquee--static');
+                    wrapper.appendChild(makeItem());
+                    return;
+                }
+
+                marquee.classList.remove('marquee--static');
 
                 var item = makeItem();
                 wrapper.appendChild(item);
@@ -595,14 +852,12 @@ body.is-ready .footbar {
 
                 x = 0;
                 wrapper.style.transform = 'translate3d(0, 0, 0)';
-
-                if (reduceMotion) return;
-
-                lastTime = 0;
-                rafId = requestAnimationFrame(tick);
+                startAnimation();
             }
 
             function tick(now) {
+                if (!rafId) return;
+
                 if (lastTime) {
                     var dt = (now - lastTime) / 1000;
                     currentSpeed += (targetSpeed - currentSpeed) * 0.08;
@@ -614,49 +869,198 @@ body.is-ready .footbar {
                 rafId = requestAnimationFrame(tick);
             }
 
+            function updateTargetSpeed() {
+                if (isPaused || reduceMotion) {
+                    targetSpeed = 0;
+                    return;
+                }
+                targetSpeed = isHovered ? SLOW_SPEED : BASE_SPEED;
+            }
+
+            function setPaused(next) {
+                isPaused = next;
+                marquee.classList.toggle('is-paused', isPaused);
+                if (pauseBtn) {
+                    pauseBtn.classList.toggle('is-paused', isPaused);
+                    pauseBtn.setAttribute('aria-pressed', isPaused ? 'true' : 'false');
+                    pauseBtn.setAttribute('aria-label', isPaused ? 'Resume scrolling text' : 'Pause scrolling text');
+                }
+                updateTargetSpeed();
+                if (isPaused) {
+                    stopAnimation();
+                } else {
+                    startAnimation();
+                }
+                syncPhraseRotation();
+            }
+
+            function advancePhrase() {
+                phraseIndex = (phraseIndex + 1) % CONFIG.phrases.length;
+                build();
+            }
+
+            function syncPhraseRotation() {
+                if (phraseTimer) {
+                    clearInterval(phraseTimer);
+                    phraseTimer = null;
+                }
+                if (reduceMotion) return;
+                if (isPaused || isHovered) {
+                    phraseTimer = setInterval(advancePhrase, PHRASE_INTERVAL);
+                }
+            }
+
             marquee.addEventListener('mouseenter', function () {
+                isHovered = true;
                 marquee.classList.add('is-hovered');
-                targetSpeed = SLOW_SPEED;
+                updateTargetSpeed();
+                syncPhraseRotation();
             });
 
             marquee.addEventListener('mouseleave', function () {
+                isHovered = false;
                 marquee.classList.remove('is-hovered');
-                targetSpeed = BASE_SPEED;
+                updateTargetSpeed();
+                syncPhraseRotation();
             });
 
-            window.addEventListener('resize', build);
+            window.addEventListener('resize', function () {
+                clearTimeout(resizeTimer);
+                resizeTimer = setTimeout(build, 150);
+            });
 
-            // theme toggle
-            var root = document.documentElement;
-            var stored = null;
-            try {
-                stored = localStorage.getItem('marquee-theme');
-            } catch (e) {}
+            document.addEventListener('visibilitychange', function () {
+                isTabVisible = !document.hidden;
+                if (isTabVisible) {
+                    startAnimation();
+                } else {
+                    stopAnimation();
+                }
+            });
 
-            if (stored === 'light' || stored === 'dark') {
-                root.setAttribute('data-theme', stored);
-            }
-
-            if (toggle) {
-                toggle.addEventListener('click', function () {
-                    var next = root.getAttribute('data-theme') === 'dark' ? null : 'dark';
-                    if (next) {
-                        root.setAttribute('data-theme', next);
-                    } else {
-                        root.removeAttribute('data-theme');
-                    }
-                    try {
-                        localStorage.setItem('marquee-theme', next || 'light');
-                    } catch (e) {}
+            if (pauseBtn) {
+                pauseBtn.addEventListener('click', function () {
+                    setPaused(!isPaused);
                 });
             }
 
-            // reveal only once fonts are ready so the entrance uses final typography
+            function showToast(message) {
+                if (!toast) return;
+                toast.textContent = message;
+                toast.classList.add('is-visible');
+                clearTimeout(toastTimer);
+                toastTimer = setTimeout(function () {
+                    toast.classList.remove('is-visible');
+                }, 2200);
+            }
+
+            if (copyEmailBtn) {
+                copyEmailBtn.addEventListener('click', function () {
+                    var email = CONFIG.email;
+                    if (navigator.clipboard && navigator.clipboard.writeText) {
+                        navigator.clipboard.writeText(email).then(function () {
+                            showToast('Email copied');
+                        }).catch(function () {
+                            showToast(email);
+                        });
+                    } else {
+                        showToast(email);
+                    }
+                });
+            }
+
+            if (brandBtn) {
+                brandBtn.addEventListener('click', function () {
+                    brandBtn.classList.remove('is-spinning');
+                    void brandBtn.offsetWidth;
+                    brandBtn.classList.add('is-spinning');
+                    window.open(CONFIG.github, '_blank', 'noopener,noreferrer');
+                });
+            }
+
+            function getSystemTheme() {
+                return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+            }
+
+            function applyTheme(theme) {
+                if (theme === 'dark') {
+                    root.setAttribute('data-theme', 'dark');
+                } else {
+                    root.removeAttribute('data-theme');
+                }
+                if (toggle) {
+                    toggle.setAttribute('aria-pressed', theme === 'dark' ? 'true' : 'false');
+                }
+                root.style.setProperty('--mask-color', getComputedStyle(root).getPropertyValue('--bg-1').trim());
+            }
+
+            function toggleTheme() {
+                var isDark = root.getAttribute('data-theme') === 'dark';
+                var next = isDark ? 'light' : 'dark';
+                applyTheme(next);
+                try {
+                    localStorage.setItem(THEME_KEY, next);
+                    localStorage.setItem(OVERRIDE_KEY, 'true');
+                } catch (e) {}
+            }
+
+            function initTheme() {
+                var stored = null;
+                var hasOverride = false;
+
+                try {
+                    stored = localStorage.getItem(THEME_KEY);
+                    hasOverride = localStorage.getItem(OVERRIDE_KEY) === 'true';
+                } catch (e) {}
+
+                if (hasOverride && (stored === 'light' || stored === 'dark')) {
+                    applyTheme(stored);
+                } else if (stored === 'light' || stored === 'dark') {
+                    applyTheme(stored);
+                    try {
+                        localStorage.setItem(OVERRIDE_KEY, 'true');
+                    } catch (e) {}
+                } else {
+                    applyTheme(getSystemTheme());
+                }
+
+                window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', function (e) {
+                    try {
+                        if (localStorage.getItem(OVERRIDE_KEY) === 'true') return;
+                    } catch (err) {
+                        return;
+                    }
+                    applyTheme(e.matches ? 'dark' : 'light');
+                });
+            }
+
+            if (toggle) {
+                toggle.addEventListener('click', toggleTheme);
+            }
+
+            document.addEventListener('keydown', function (e) {
+                if (e.target && (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA' || e.target.isContentEditable)) {
+                    return;
+                }
+
+                if (e.code === 'KeyT' && !e.metaKey && !e.ctrlKey && !e.altKey) {
+                    e.preventDefault();
+                    toggleTheme();
+                }
+
+                if (e.code === 'Space' && !e.metaKey && !e.ctrlKey && !e.altKey) {
+                    e.preventDefault();
+                    setPaused(!isPaused);
+                }
+            });
+
             function reveal() {
                 document.body.classList.add('is-ready');
             }
 
+            initTheme();
             build();
+
             if (document.fonts && document.fonts.ready) {
                 var fallback = setTimeout(reveal, 2200);
                 document.fonts.ready.then(function () {
